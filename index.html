@@ -105,6 +105,24 @@
     cursor: pointer;
   }
 
+  .insta {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 20px;
+    margin: 0;
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .insta a {
+    color: #4a9eff;
+    text-decoration: none;
+  }
+
+  .insta a:hover { text-decoration: underline; }
+
   @media (min-width: 700px) {
     .wrap {
       max-width: 520px;
@@ -140,6 +158,7 @@
       <button type="submit" name="subscribe">Me prévenir</button>
     </form>
   </main>
+  <p class="insta">Instagram : <a href="https://www.instagram.com/ojeez.beats/" target="_blank" rel="noopener noreferrer">@ojeez.beats</a></p>
   <script>
   (function () {
     var form = document.querySelector('.form');
