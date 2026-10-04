@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>OGs — Liste d'attente</title>
+<title>OJEEZ Waitlist</title>
 <style>
   :root {
     --bg: #080808;
@@ -140,5 +140,64 @@
       <button type="submit" name="subscribe">Me prévenir</button>
     </form>
   </main>
+  <script>
+  (function () {
+    var form = document.querySelector('.form');
+    var button = form.querySelector('button');
+    var buttonLabel = button.textContent;
+    var errorBox = null;
+
+    function showError(text) {
+      if (!errorBox) {
+        errorBox = document.createElement('p');
+        errorBox.setAttribute('role', 'alert');
+        errorBox.style.cssText = 'margin:12px auto 0;max-width:340px;color:#b3b3b3;font-size:14px;line-height:1.5;';
+        form.parentNode.insertBefore(errorBox, form.nextSibling);
+      }
+      errorBox.textContent = text;
+      button.disabled = false;
+      button.textContent = buttonLabel;
+    }
+
+    function showSuccess() {
+      if (errorBox) errorBox.remove();
+      var done = document.createElement('div');
+      done.className = 'text-block';
+      done.setAttribute('role', 'status');
+      done.style.marginTop = '30px';
+      done.textContent = 'C\u2019est bon, tu seras pr\u00e9venu.';
+      form.parentNode.replaceChild(done, form);
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (button.disabled) return;
+      button.disabled = true;
+      button.textContent = '\u2026';
+
+      var cb = 'mcCallback' + Date.now();
+      var params = new URLSearchParams(new FormData(form));
+      params.set('c', cb);
+      var url = form.action.replace('/subscribe/post?', '/subscribe/post-json?') + '&' + params.toString();
+      var script = document.createElement('script');
+      var timer = setTimeout(function () { cleanup(); showError('Pas de r\u00e9ponse. V\u00e9rifie ta connexion et r\u00e9essaie.'); }, 10000);
+
+      function cleanup() { clearTimeout(timer); delete window[cb]; script.remove(); }
+
+      window[cb] = function (res) {
+        cleanup();
+        var msg = (res && res.msg) || '';
+        if (res && res.result === 'success') return showSuccess();
+        if (/already subscribed/i.test(msg)) return showSuccess();
+        if (/too many/i.test(msg)) return showError('Trop de tentatives. R\u00e9essaie dans quelques minutes.');
+        if (/email/i.test(msg)) return showError('Cette adresse email ne semble pas valide.');
+        showError('Oups, \u00e7a n\u2019a pas march\u00e9. R\u00e9essaie.');
+      };
+      script.onerror = function () { cleanup(); showError('Oups, \u00e7a n\u2019a pas march\u00e9. R\u00e9essaie.'); };
+      script.src = url;
+      document.body.appendChild(script);
+    });
+  })();
+  </script>
 </body>
 </html>
