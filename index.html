@@ -59,7 +59,7 @@
     color: var(--text);
     font-size: 15px;
     line-height: 1.75;
-    font-weight: 500;
+    font-weight: 400;
     text-align: center;
   }
 
@@ -162,10 +162,10 @@
     function showSuccess() {
       if (errorBox) errorBox.remove();
       var done = document.createElement('div');
-      done.className = 'text-block';
       done.setAttribute('role', 'status');
-      done.style.marginTop = '30px';
-      done.textContent = 'C\u2019est bon, tu seras pr\u00e9venu.';
+      done.setAttribute('aria-label', 'Inscription confirm\u00e9e');
+      done.style.cssText = 'margin:30px auto 0;display:flex;justify-content:center;';
+      done.innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
       form.parentNode.replaceChild(done, form);
     }
 
